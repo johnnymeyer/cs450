@@ -32,4 +32,4 @@ y = HardCoded()
 y.train(train_data, train_target)
 get_accuracy(y.predict(test_data), test_target)
 
-# happy birthday
+# one more test I think
