@@ -31,3 +31,5 @@ def get_accuracy(results, test_tar):
 y = HardCoded()
 y.train(train_data, train_target)
 get_accuracy(y.predict(test_data), test_target)
+
+# testing to make sure I still understand git
