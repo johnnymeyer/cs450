@@ -4,8 +4,16 @@ from sklearn.cross_validation import train_test_split as tts
 # load the data from the database
 iris = datasets.load_iris()
 
+ts = 0
+while ts < .1 or ts > .5:
+    ts = float(input("Percentage of data for testing (Enter value between .1 and .5)\n  >> "))
+
+rs = 0
+while rs <= 0:
+    rs = int(input("Random state for shuffling (Enter positive integer)\n  >> "))
+
 # split the data into test and training sets after it shuffles the data
-train_data, test_data, train_target, test_target = tts(iris.data, iris.target, test_size=.3, random_state=15)
+train_data, test_data, train_target, test_target = tts(iris.data, iris.target, test_size=ts, random_state=rs)
 
 class HardCoded:
     def train(self, data_set, target_set):
@@ -31,5 +39,3 @@ def get_accuracy(results, test_tar):
 y = HardCoded()
 y.train(train_data, train_target)
 get_accuracy(y.predict(test_data), test_target)
-
-# one more test I think
