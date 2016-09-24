@@ -1,11 +1,9 @@
 import sys
 from sklearn import datasets
 from sklearn.cross_validation import train_test_split as tts
-from sklearn.neighbors import KNeighborsClassifier as knc
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing as prepros
-from random import shuffle
 
 
 def load_dataset(set):
