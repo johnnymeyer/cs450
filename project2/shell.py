@@ -5,6 +5,22 @@ from sklearn.neighbors import KNeighborsClassifier as knc
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing as prepros
+from random import shuffle
+
+
+def load_dataset(set):
+    return set.data, set.target
+
+
+def load_file(file):
+    df = pd.read_csv(file, header=None)
+
+    ds_len_column = len(df.columns)
+
+    data = df.loc[:, : ds_len_column - 2]
+    targets = df.ix[:, ds_len_column - 1: ds_len_column - 1]
+
+    return data.values, targets.values
 
 
 class KNNClassifier:
@@ -55,7 +71,8 @@ def standarize(train, test):
     return train_std, test_std
 
 
-def data_processing(dataset, classifier):
+#def data_processing(dataset, classifier):
+def data_processing(d_data, d_target, classifier):
     # user input for how much should be test and random state being used
     ts = 0
     while ts < .1 or ts > .5:
@@ -70,7 +87,8 @@ def data_processing(dataset, classifier):
         k_value = int(input("k value (Enter positive integer): "))
 
     # split the data into test and training sets after it shuffles the data
-    train_data, test_data, train_target, test_target = tts(dataset.data, dataset.target, test_size=ts, random_state=rs)
+    #train_data, test_data, train_target, test_target = tts(dataset.data, dataset.target, test_size=ts, random_state=rs)
+    train_data, test_data, train_target, test_target = tts(d_data, d_target, test_size=ts, random_state=rs)
 
     # normalize the data
     train_data_std, test_data_std = standarize(train_data, test_data)
@@ -80,18 +98,21 @@ def data_processing(dataset, classifier):
 
 def main(argv):
     # load the data from the database - choose which data set you want to use
-    #dataset = datasets.load_iris()
-    #dataset = datasets.load_breast_cancer()
-    df = pd.read_csv('car2.csv', header=None)
 
-    #df.columns = ['data', 'data', 'data', 'data', 'data', 'data', 'target']
-    #dataset = df.values
+    # iris data
+    data, targets = load_dataset(datasets.load_iris())
+
+    # breast cancer data
+    #data, targets = load_dataset(datasets.load_breast_cancer())
+
+    # car data -- local file
+    #data, targets = load_file('car1.csv')
+
 
     # make the classifier
     classifier = KNNClassifier()
 
-    data_processing(df, classifier)
-
+    data_processing(data, targets, classifier)
 
 
 if __name__ == "__main__":
