@@ -23,30 +23,10 @@ def load_file(file):
 
 class KNNClassifier:
     def train(self, data_set, target_set):
-        # this will be where I standarize the data
         pass
 
-    # algorithm is from the book, but I looked up all that I did not understand
-    def predict(self, k, data, data_class, inputs):
-        nInputs = np.shape(inputs)[0]
-        closest = np.zeros(nInputs)
-
-        for n in range(nInputs):
-            distances = np.sum((data - inputs[n,:])**2, axis=1)
-
-            indices = np.argsort(distances, axis=0)
-
-            classes = np.unique(data_class[indices[:k]])
-
-            if len(classes) == 1:
-                closest[n] = np.unique(classes)
-            else:
-                counts = np.zeros(max(classes) + 1)
-                for i in range(k):
-                    counts[data_class[indices[i]]] += 1
-                closest[n] = np.max(counts)
-
-        return closest
+    def predict():
+        pass
 
 
 def get_accuracy(results, test_tar):
@@ -85,7 +65,6 @@ def data_processing(d_data, d_target, classifier):
         k_value = int(input("k value (Enter positive integer): "))
 
     # split the data into test and training sets after it shuffles the data
-    #train_data, test_data, train_target, test_target = tts(dataset.data, dataset.target, test_size=ts, random_state=rs)
     train_data, test_data, train_target, test_target = tts(d_data, d_target, test_size=ts, random_state=rs)
 
     # normalize the data
@@ -105,7 +84,6 @@ def main(argv):
 
     # car data -- local file
     data, targets = load_file('car1.csv')
-    print(data)
 
     # make the classifier
     classifier = KNNClassifier()
@@ -115,11 +93,3 @@ def main(argv):
 
 if __name__ == "__main__":
     main(sys.argv)
-
-
-
-
-
-# y = KNNClassifier()
-# #y.train(train_data, train_target)
-# get_accuracy(y.predict(k_value, train_data, train_target, test_data), test_target)
