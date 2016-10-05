@@ -25,11 +25,50 @@ def all_same(items):
 
 
 def calc_entropy_weighted_average(data, clas, feature):
+    # list of the possible values for a feature
     values = []
     for data_point in data:
         if data_point[feature] not in values:
             values.append(data_point[feature])
-    
+
+    feature_value_count = np.zeros(len(values))
+    entropy = np.zeros(len(values))
+
+    value_index = 0
+
+    # loop for each value e.g. good, avg, and low in credit score
+    for v in values:
+        data_index = 0
+        newClasses = []
+        # loop for each row of the data
+        for data_point in data:
+            # e.g. if we are in good branch does the data point of a row
+            #      equal good
+            if data_point[feature] == v:
+                feature_value_count[value_index] += 1
+                newClasses.append(clas[data_index])
+                # e.g. newClasses = ['y','n','y','n'] for credit score branch good
+            data_index += 1
+
+        # array for the class values
+        class_values = []
+        for c in newClasses:
+            # if the c is not in the array yet add it
+            if class_values.count(c) == 0:
+                class_values.append(c)
+
+        # array containg the number of each value of the class
+        num_class_values = np.zeros(len(class_values))
+        class_index = 0
+        # find the number of yes for each good in credit score
+        # e.g. credit score - good branch - would contain 2 2
+        for cv in class_values:
+            for c in newClasses:
+                if c == cv:
+                    num_class_values[class_index] +=1
+            class_index += 1
+
+
 
 
 def calculate_entropy(p):
@@ -40,18 +79,21 @@ def calculate_entropy(p):
 
 
 def make_tree(data, classes, f_names):
+    num_f_names = len(f_names)
     if all_same(classes):
         n = Node()
         n.name = classes[0]
         return n
-    elif len(f_names) == 1:
+    elif num_f_names == 1:
         most_common_class = np.argmax(classes)
         n = Node()
         n.name = most_common_class
         return n
     else:
-        for name in f_names:
-            calc_entropy_weighted_average(data, classes, name)
+        # todo switch back to loop
+        calc_entropy_weighted_average(data, classes, 0)
+        #for name in range(num_f_names):
+            #calc_entropy_weighted_average(data, classes, name)
 
 
 def get_accuracy(results, test_tar):
@@ -82,14 +124,13 @@ def data_processing(d_data, d_target, classifier, feature_names):
     while rs <= 0:
         rs = int(input("Random state for shuffling (Enter positive integer): "))
 
-    k_value = 0
-    while k_value <= 0:
-        k_value = int(input("k value (Enter positive integer): "))
 
     # split the data into test and training sets after it shuffles the data
     train_data, test_data, train_target, test_target = tts(d_data, d_target, test_size=ts, random_state=rs)
 
-    classifier.train(train_data, train_target, feature_names)
+    # todo switch back to buttom classifier
+    classifier.train(d_data, d_target, feature_names)
+    #classifier.train(train_data, train_target, feature_names)
     #get_accuracy(classifier.predict(train_data, train_target, test_data), test_target)
 
 
@@ -132,9 +173,7 @@ def main(argv):
     #data, targets = load_dataset(datasets.load_breast_cancer())
 
     # car data -- local file
-    data, targets, feature_names = load_file('car.csv')
-    print(data)
-    print(targets)
+    data, targets, feature_names = load_file('loan.csv')
 
     # make the classifier
     classifier = Classifier()

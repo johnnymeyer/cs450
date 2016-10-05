@@ -1,0 +1,14 @@
+credit_score,income,collateral,job_history,className
+good,high,good,long,yes
+good,high,poor,short,no
+good,low,good,long,yes
+good,low,poor,long,no
+average,high,good,long,yes
+average,low,poor,long,no
+average,low,poor,short,no
+average,high,poor,long,yes
+average,low,good,long,no
+low,high,good,long,yes
+low,high,poor,long,no
+low,high,good,short,no
+low,low,poor,long,no
