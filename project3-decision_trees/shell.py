@@ -27,18 +27,20 @@ def all_same(items):
 def calc_entropy_weighted_average(data, clas, feature):
     """
     This algorithm is based off of the calc_info_gain
-    from the book
+    from the book, except this function just calculates
+    the weighted entropy value
     :param data: the data from the dataset
     :param clas: the list of possible classes (targets)
     :param feature: the feature that we are calculating the
                     entropy for
-    :return zzzzzz: the weighted average of entropy for this branch
+    :return wei: the weighted average of entropy for this branch
     """
     num_data = len(data) # the number of data items
     # list of the possible values for a feature
     values = []
     for data_point in data:
         if data_point[feature] not in values:
+            # get the names of the branches
             values.append(data_point[feature])
 
     feature_value_count = np.zeros(len(values))
@@ -56,8 +58,8 @@ def calc_entropy_weighted_average(data, clas, feature):
             #      equal good
             if data_point[feature] == v:
                 feature_value_count[value_index] += 1
-                newClasses.append(clas[data_index])
-                # e.g. newClasses = ['y','n','y','n'] for credit score branch good
+                newClasses.append(clas[data_index]) # e.g. newClasses = ['y','n','y','n'] for credit score branch good
+
             data_index += 1
 
         # array for the class values
@@ -71,7 +73,7 @@ def calc_entropy_weighted_average(data, clas, feature):
         num_class_values = np.zeros(len(class_values))
 
         class_index = 0
-        # find the number of yes for each good in credit score
+        # find the number of yes and no for each good in credit score
         # e.g. credit score - good branch - would contain 2 2
         for cv in class_values:
             for c in newClasses:
@@ -79,18 +81,16 @@ def calc_entropy_weighted_average(data, clas, feature):
                     num_class_values[class_index] +=1
             class_index += 1
 
-        # calculate the entropy
+        # calculate the entropy getting the fractional part to put into the entropy function
         for i in range(len(class_values)):
             entropy[value_index] += calculate_entropy(float(num_class_values[i]) / sum(num_class_values))
 
         # weight the entropy
-        entropy[value_index] = (entropy[value_index] * (feature_value_count[value_index] / num_data))
+        weight = feature_value_count[value_index] / num_data
+        entropy[value_index] = (entropy[value_index] * weight)
         value_index += 1
-    print(entropy)
-    print(sum(entropy) / len(entropy))
 
-    return sum(entropy) / len(entropy)
-
+    return sum(entropy)
 
 
 def calculate_entropy(p):
