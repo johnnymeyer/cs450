@@ -25,6 +25,16 @@ def all_same(items):
 
 
 def calc_entropy_weighted_average(data, clas, feature):
+    """
+    This algorithm is based off of the calc_info_gain
+    from the book
+    :param data: the data from the dataset
+    :param clas: the list of possible classes (targets)
+    :param feature: the feature that we are calculating the
+                    entropy for
+    :return zzzzzz: the weighted average of entropy for this branch
+    """
+    num_data = len(data) # the number of data items
     # list of the possible values for a feature
     values = []
     for data_point in data:
@@ -57,8 +67,9 @@ def calc_entropy_weighted_average(data, clas, feature):
             if class_values.count(c) == 0:
                 class_values.append(c)
 
-        # array containg the number of each value of the class
+        # array containing the number of each value of the class
         num_class_values = np.zeros(len(class_values))
+
         class_index = 0
         # find the number of yes for each good in credit score
         # e.g. credit score - good branch - would contain 2 2
@@ -68,6 +79,17 @@ def calc_entropy_weighted_average(data, clas, feature):
                     num_class_values[class_index] +=1
             class_index += 1
 
+        # calculate the entropy
+        for i in range(len(class_values)):
+            entropy[value_index] += calculate_entropy(float(num_class_values[i]) / sum(num_class_values))
+
+        # weight the entropy
+        entropy[value_index] = (entropy[value_index] * (feature_value_count[value_index] / num_data))
+        value_index += 1
+    print(entropy)
+    print(sum(entropy) / len(entropy))
+
+    return sum(entropy) / len(entropy)
 
 
 
