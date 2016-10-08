@@ -6,18 +6,34 @@ import numpy as np
 
 
 class Node:
-    def __init__(self):
-        self.name = ""
-        self.childNode = {}
+    def __init__(self, name="", child_node={}):
+        self.name = name
+        self.child_node = child_node
 
 
 class Classifier:
-    #todo write what the classifer does
     def train(self, data_set, target_set, f_names):
-        make_tree(data_set, target_set, f_names)
+        a = make_tree(data_set, target_set, f_names)
+        print("tree")
+        print(a)
 
     def predict(self):
         pass
+
+
+def get_values(info, col):
+    """
+    Returns a list of possible values for a certain feature
+    :param info: the data set
+    :param col: the col that is desired to find the possible values
+    :return values: list of the possible values
+    """
+    values = []
+    for data_point in info:
+        if data_point[col] not in values:
+            # get the names of the branches
+            values.append(data_point[col])
+    return values
 
 
 def all_same(items):
@@ -33,15 +49,12 @@ def calc_entropy_weighted_average(data, clas, feature):
     :param clas: the list of possible classes (targets)
     :param feature: the feature that we are calculating the
                     entropy for
-    :return wei: the weighted average of entropy for this branch
+    :return entropy: the weighted average of entropy for this branch
     """
-    num_data = len(data) # the number of data items
+    num_data = len(data)  # the number of data items
+
     # list of the possible values for a feature
-    values = []
-    for data_point in data:
-        if data_point[feature] not in values:
-            # get the names of the branches
-            values.append(data_point[feature])
+    values = get_values(data, feature)
 
     feature_value_count = np.zeros(len(values))
     entropy = np.zeros(len(values))
@@ -102,20 +115,60 @@ def calculate_entropy(p):
 
 def make_tree(data, classes, f_names):
     num_f_names = len(f_names)
+
     if all_same(classes):
-        n = Node()
-        n.name = classes[0]
+        n = Node(classes[0])
         return n
-    elif num_f_names == 1:
+
+    elif num_f_names == 1: # should be 0
         most_common_class = np.argmax(classes)
-        n = Node()
-        n.name = most_common_class
+        n = Node(f_names[most_common_class])
         return n
+
     else:
-        # todo switch back to loop
-        calc_entropy_weighted_average(data, classes, 0)
-        #for name in range(num_f_names):
-            #calc_entropy_weighted_average(data, classes, name)
+        entropy_totals = np.zeros(num_f_names) # list for all the entropies
+
+        # loop through each feature to and calculate each entropy
+        for name in range(num_f_names):
+            entropy_totals[name] = calc_entropy_weighted_average(data, classes, name)
+
+        # the lowest entropy is the best feature
+        best_feature = np.argmin(entropy_totals)
+
+        values = get_values(data, best_feature)
+
+        #tree = Node(f_names[best_feature])
+        tree = {f_names[best_feature]:{}}
+
+        #
+        new_data = []
+        new_class = []
+        index = 0
+
+        for value in values:
+            for data_point in data:
+                data_point = data_point.tolist()
+                if best_feature == 0:
+                    data_point = data_point[1:]
+                    new_names = f_names[1:]
+                elif best_feature == num_f_names:
+                    data_point = data_point[:-1]
+                    new_names = data_point[:-1]
+                else:
+                    data_point = data_point[:best_feature]
+                    data_point.extend(data_point[best_feature+1:])
+                    # data_point = np.append(data_point, data_point[best_feature+1:])
+                    new_names = f_names[:best_feature]
+                    new_names.append(f_names[best_feature+1:])
+                new_data.append(data_point)
+                new_class.append(classes[index])
+            index += 1
+        print(new_data)
+        #sub_tree = make_tree(new_data, new_class, new_names)
+
+        #tree.child_node =
+        #tree[f_names[best_feature]][value] = sub_tree
+    #return tree
 
 
 def get_accuracy(results, test_tar):
@@ -145,7 +198,6 @@ def data_processing(d_data, d_target, classifier, feature_names):
     rs = 0
     while rs <= 0:
         rs = int(input("Random state for shuffling (Enter positive integer): "))
-
 
     # split the data into test and training sets after it shuffles the data
     train_data, test_data, train_target, test_target = tts(d_data, d_target, test_size=ts, random_state=rs)
