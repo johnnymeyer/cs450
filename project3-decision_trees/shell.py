@@ -1,5 +1,7 @@
 import sys
 from sklearn import datasets
+from statistics import mode
+from scipy import stats
 from sklearn.cross_validation import train_test_split as tts
 import pandas as pd
 import numpy as np
@@ -17,7 +19,7 @@ class Classifier:
         print("tree")
         print(a)
 
-    def predict(self):
+    def predict(self, tree, test_data):
         pass
 
 
@@ -115,15 +117,32 @@ def calculate_entropy(p):
 
 def make_tree(data, classes, f_names):
     num_f_names = len(f_names)
+    num_data = len(data)
 
-    if all_same(classes):
-        n = Node(classes[0])
-        return n
+    # if all_same(classes):
+    #     # n = Node(classes[0])
+    #     # return n
+    #     return classes[0]
+    #
+    # elif num_f_names == 0:
+    #     # most_common_class = np.argmax(classes)
+    #     # n = Node(f_names[most_common_class])
+    #     # return n
+    #     g = classes[np.argmax(classes)]
+    #     print(classes)
+    #     return g
 
-    elif num_f_names == 1: # should be 0
-        most_common_class = np.argmax(classes)
-        n = Node(f_names[most_common_class])
-        return n
+    g = stats.mode(classes)
+    g = g[0]
+
+    if num_data == 0 or num_f_names == 0:
+
+        #g = mode(x)
+        #print(g)
+        return g
+
+    elif len(classes[0]) == num_data:
+        return classes[0]
 
     else:
         entropy_totals = np.zeros(num_f_names) # list for all the entropies
@@ -143,32 +162,39 @@ def make_tree(data, classes, f_names):
         #
         new_data = []
         new_class = []
-        index = 0
 
         for value in values:
-            for data_point in data:
-                data_point = data_point.tolist()
-                if best_feature == 0:
-                    data_point = data_point[1:]
-                    new_names = f_names[1:]
-                elif best_feature == num_f_names:
-                    data_point = data_point[:-1]
-                    new_names = data_point[:-1]
-                else:
-                    data_point = data_point[:best_feature]
-                    data_point.extend(data_point[best_feature+1:])
-                    # data_point = np.append(data_point, data_point[best_feature+1:])
-                    new_names = f_names[:best_feature]
-                    new_names.append(f_names[best_feature+1:])
-                new_data.append(data_point)
-                new_class.append(classes[index])
-            index += 1
-        print(new_data)
-        #sub_tree = make_tree(new_data, new_class, new_names)
+            index = 0
+            for d_p in data:
+                if d_p[best_feature] == value:
+                    #d_p = data_point.tolist()
+                    if best_feature == 0:
+                        data_point = d_p[1:]
+                        new_names = f_names[1:]
+                    elif best_feature == num_f_names:
+                        data_point = d_p[:-1]
+                        new_names = f_names[:-1]
+                    else:
+                        data_point = d_p[:best_feature]
+                        if isinstance(data_point, np.ndarray):
+                            data_point = data_point.tolist()
+                        data_point.extend(d_p[best_feature+1:])
+                        # data_point = np.append(data_point, data_point[best_feature+1:])
 
-        #tree.child_node =
-        #tree[f_names[best_feature]][value] = sub_tree
-    #return tree
+                        new_names = f_names[:best_feature]
+                        new_names.append(f_names[best_feature+1:])
+
+                    new_data.append(data_point)
+                    new_class.append(classes[index])
+
+                index += 1
+
+            sub_tree = make_tree(new_data, new_class, new_names)
+
+            #tree = Node(sub_tree.name, sub_tree.child_node)
+            tree[f_names[best_feature]][value] = sub_tree
+
+        return tree
 
 
 def get_accuracy(results, test_tar):
@@ -203,9 +229,9 @@ def data_processing(d_data, d_target, classifier, feature_names):
     train_data, test_data, train_target, test_target = tts(d_data, d_target, test_size=ts, random_state=rs)
 
     # todo switch back to buttom classifier
-    classifier.train(d_data, d_target, feature_names)
-    #classifier.train(train_data, train_target, feature_names)
-    #get_accuracy(classifier.predict(train_data, train_target, test_data), test_target)
+    #classifier.train(d_data, d_target, feature_names)
+    tree = classifier.train(train_data, train_target, feature_names)
+    get_accuracy(classifier.predict(tree, test_data), test_target)
 
 
 def load_dataset(set):
