@@ -25,12 +25,15 @@ class Classifier:
         first_index = f_names.index(first)
 
         for row in test_data:
-            # row[first_index]
             pass
 
 
 
         # return the resluts of prediction
+
+
+def traverse(root, row):
+    pass
 
 
 def get_values(info, col):
