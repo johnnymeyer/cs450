@@ -1,6 +1,5 @@
 import sys
 from sklearn import datasets
-from statistics import mode
 from scipy import stats
 from sklearn.cross_validation import train_test_split as tts
 import pandas as pd
@@ -18,9 +17,20 @@ class Classifier:
         a = make_tree(data_set, target_set, f_names)
         print("tree")
         print(a)
+        return a
 
-    def predict(self, tree, test_data):
-        pass
+    def predict(self, tree, test_data, f_names):
+        f_names = f_names.tolist()
+        first = list(tree.keys())[0]
+        first_index = f_names.index(first)
+
+        for row in test_data:
+            # row[first_index]
+            pass
+
+
+
+        # return the resluts of prediction
 
 
 def get_values(info, col):
@@ -231,7 +241,8 @@ def data_processing(d_data, d_target, classifier, feature_names):
     # todo switch back to buttom classifier
     #classifier.train(d_data, d_target, feature_names)
     tree = classifier.train(train_data, train_target, feature_names)
-    get_accuracy(classifier.predict(tree, test_data), test_target)
+    #get_accuracy(classifier.predict(tree, test_data, feature_names), test_target)
+    classifier.predict(tree, test_data, feature_names)
 
 
 def load_dataset(set):
