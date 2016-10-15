@@ -23,7 +23,7 @@
       <file leaf-file-name="shell.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/shell.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
+            <state relative-caret-position="735">
               <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
@@ -110,7 +110,7 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="/anaconda/bin/python3.5" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../project4-neural-network" />
   </component>
   <component name="RunManager" selected="Python.shell">
     <configuration default="false" name="shell" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -522,7 +522,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/shell.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
+        <state relative-caret-position="735">
           <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
