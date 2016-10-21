@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from sklearn import preprocessing as prepros
 from random import triangular as tri
+import math
 
 
 class Neuron:
@@ -12,6 +13,7 @@ class Neuron:
         self.weights = [tri(-1.0, 1.0) for _ in range(num_of_attributes + 1)]
         self.threshold = 0
         self.bias = -1
+        self.activate_value = 0
 
     def calc_output(self, inputs):
         inputs = np.append(inputs, self.bias)
@@ -20,7 +22,9 @@ class Neuron:
         for count, ele in enumerate(inputs):
             weight_sum += (self.weights[count] * ele)
 
-        return 0 if weight_sum < self.threshold else 1
+        self.activate_value = sigmoid(weight_sum)
+
+        return self.activate_value
 
 
 def load_dataset(s):
@@ -45,22 +49,49 @@ def load_file(file):
     return data.values, targets.values
 
 
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
+
+
 class Classifier:
-    def __init__(self, num_neurons, atribute_count):
-        self.neurons = [Neuron(atribute_count) for _ in range(num_neurons)]
+    def __init__(self, num_layers, data, num_targets):
+        self.layers = []
+        self.all_results = []
 
-    def train(self, data_set, target_set):
-        pass
+        for i in range(0, num_layers):
+            self.layers.append(self.make_layer(num_layers, i, data, num_targets))
+            # self.layers.append([Neuron(len(self.layers[i - 1]) if i > 0 else data.shape[1])
+            #                     for _ in range(int(input("How many neurons for layer " + str(i) + "? ")))])
 
-    def predict(self, k, data, data_class, inputs):
+    def train(self, data):
+        for data_row in data:
+            activation = self.results(data_row)
+            self.all_results.append(activation)
+
+    def predict(self, data_set, target_set):
         pass
 
     def results(self, inputs):
-        return [neuron.calc_output(inputs) for neuron in self.neurons]
+        res = []
+        for index, layer in enumerate(self.layers):
+            res.append([neuron.calc_output(res[index - 1] if index > 0 else inputs) for neuron in layer])
+        return res
 
-    def print_outputs(self, data):
-        for data_row in data:
-            print(self.results(data_row))
+    def print_results(self):
+        for row in self.all_results:
+            print(row[-1])
+
+    def make_layer(self, num_layers, layer_num, data, num_targets):
+        # hidden
+        if layer_num > 0 and layer_num < num_layers - 1:
+            return [Neuron(len(self.layers[layer_num - 1]))
+                    for _ in range(int(input("Num Neurons for layer" + str(layer_num) + "?")))]
+        # first or input layer
+        elif layer_num == 0:
+            return [Neuron(data.shape[1]) for _ in range(data.shape[1])]
+        # last or output layer
+        else:
+            return [Neuron(len(self.layers[layer_num - 1])) for _ in range(num_targets)]
 
 
 def standarize(train, test):
@@ -99,9 +130,17 @@ def data_processing(d_data, d_target, classifier):
     # normalize the data
     train_data_std, test_data_std = standarize(train_data, test_data)
 
-    classifier.print_outputs(train_data_std)
+    classifier.train(train_data_std)
 
     #get_accuracy(classifier.predict(train_data_std, train_target, test_data_std), test_target)
+
+
+def num_of_diff_targets(targets):
+    tar = []
+    for t in targets:
+        if t not in tar:
+            tar.append(t)
+    return len(tar)
 
 
 def main(argv):
@@ -111,17 +150,20 @@ def main(argv):
     data, targets = load_dataset(datasets.load_iris())
 
     # pima indian diabetes
-    #data, targets = load_file("pima.csv")
+    # data, targets = load_file("pima.csv")
 
     # get the number of attributes
-    num_column = len(data[0])
+    num_inputs = len(data[0])
 
-    num_neuron = 0
-    while num_neuron < 1:
-        num_neuron = int(input("Number of Neurons: "))
+    # number of targets
+    num_targets = num_of_diff_targets(targets)
+
+    num_layers = 0
+    while num_layers < 1:
+        num_layers = int(input("Number of Layers: "))
 
     # make the classifier
-    classifier = Classifier(num_neuron, num_column)
+    classifier = Classifier(num_layers, data, num_targets)
 
     data_processing(data, targets, classifier)
 
