@@ -68,8 +68,11 @@ class Classifier:
             activation = self.results(data_row)
             self.all_results.append(activation)
 
-    def predict(self, data_set, target_set):
-        pass
+    def predict(self, data_set):
+        prediction = []
+        for d in data_set:
+            prediction.append(self.results(d)[-1])
+        return prediction
 
     def results(self, inputs):
         res = []
@@ -85,10 +88,11 @@ class Classifier:
         # hidden
         if layer_num > 0 and layer_num < num_layers - 1:
             return [Neuron(len(self.layers[layer_num - 1]))
-                    for _ in range(int(input("Num Neurons for layer" + str(layer_num) + "?")))]
+                    for _ in range(int(input("Num Neurons for layer " + str(layer_num) + "? ")))]
         # first or input layer
         elif layer_num == 0:
-            return [Neuron(data.shape[1]) for _ in range(data.shape[1])]
+            return [Neuron(data.shape[1])
+                    for _ in range(int(input("Num Neurons for layer " + str(layer_num) + "? ")))]
         # last or output layer
         else:
             return [Neuron(len(self.layers[layer_num - 1])) for _ in range(num_targets)]
@@ -106,8 +110,8 @@ def standarize(train, test):
 def get_accuracy(results, test_tar):
     number_correct = 0
 
-    for i in range(test_tar.size):
-        if results[i] == test_tar[i]:
+    for r, tt in zip(results, test_tar):
+        if tt == r.index(max(r)):
             number_correct += 1
 
     print("\nNumber of correct predictions:", number_correct, " of ", test_tar.size)
@@ -131,6 +135,7 @@ def data_processing(d_data, d_target, classifier):
     train_data_std, test_data_std = standarize(train_data, test_data)
 
     classifier.train(train_data_std)
+    get_accuracy(classifier.predict(test_data_std), test_target)
 
     #get_accuracy(classifier.predict(train_data_std, train_target, test_data_std), test_target)
 
@@ -143,6 +148,13 @@ def num_of_diff_targets(targets):
     return len(tar)
 
 
+def get_number_of_layers():
+    lay = 0
+    while lay < 1:
+        lay = int(input("Number of Layers: "))
+    return lay
+
+
 def main(argv):
     # load the data from the database - choose which data set you want to use
 
@@ -152,15 +164,11 @@ def main(argv):
     # pima indian diabetes
     # data, targets = load_file("pima.csv")
 
-    # get the number of attributes
-    num_inputs = len(data[0])
+    # number of targets and list of targets
+    num_targets= num_of_diff_targets(targets)
 
-    # number of targets
-    num_targets = num_of_diff_targets(targets)
-
-    num_layers = 0
-    while num_layers < 1:
-        num_layers = int(input("Number of Layers: "))
+    # get the number of desired layers
+    num_layers = get_number_of_layers()
 
     # make the classifier
     classifier = Classifier(num_layers, data, num_targets)
