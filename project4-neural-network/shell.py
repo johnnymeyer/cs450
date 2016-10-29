@@ -6,6 +6,8 @@ import numpy as np
 from sklearn import preprocessing as prepros
 from random import triangular as tri
 import math
+import matplotlib.pyplot as plt
+from sklearn import neural_network as MLP
 
 
 class Neuron:
@@ -70,16 +72,28 @@ class Classifier:
 
     def train(self, data, targets):
         num_epochs = 0
+        accuracy = []
         while num_epochs < 1:
             num_epochs = int(input("Number of Epochs: "))
 
         for _ in range(num_epochs):
             all_results = []
+            pred = []
 
             for data_row, target_row in zip(data, targets):
                 activation = self.results(data_row)
                 all_results.append(activation)
+                pred.append(self.results(data_row)[-1])
                 self.update(data_row, target_row, activation)
+
+            accuracy.append(100 * sum([targets[i] == p.index(max(p)) for i, p in enumerate(pred)]) / len(targets))
+            print("Accuracy for epoch", _ + 1, ":", accuracy[_])
+
+        if input("Would you like to see the accuracy graph? (y/n): ") == 'y':
+            plt.plot(range(1, num_epochs + 1), accuracy)
+            plt.ylabel('ACCURACY')
+            plt.xlabel('EPOCH')
+            plt.show()
 
     def update(self, d_row, t_row, a_values):
         self.calc_error(t_row, a_values)
@@ -164,6 +178,17 @@ def get_accuracy(results, test_tar):
     print("Accuracy rate is {0:.2f}%".format((number_correct / test_tar.size) * 100))
 
 
+def accuracy_for_sklearn_mlp(res, tt):
+    num_cor = 0
+
+    for r, t in zip(res, tt):
+        if r == t:
+            num_cor += 1
+
+    print("\nNumber of correct predictions:", num_cor, " of ", tt.size)
+    print("Accuracy rate is {0:.2f}%".format((num_cor / tt.size) * 100))
+
+
 def data_processing(d_data, d_target, classifier):
     # user input for how much should be test and random state being used
     ts = 0
@@ -174,12 +199,13 @@ def data_processing(d_data, d_target, classifier):
     while rs <= 0:
         rs = int(input("Random state for shuffling (Enter positive integer): "))
 
-    # for test purposes of xor
-    # classifier.train(d_data, d_target)
-    # get_accuracy(classifier.predict(d_data), d_target)
-
     # split the data into test and training sets after it shuffles the data
     train_data, test_data, train_target, test_target = tts(d_data, d_target, test_size=ts, random_state=rs)
+
+    # c = MLP.MLPClassifier()
+    # c.fit(train_data, train_target)
+    # ans = c.predict(test_data)
+    # accuracy_for_sklearn_mlp(ans, test_target)
 
     # normalize the data
     train_data_std, test_data_std = standarize(train_data, test_data)
@@ -215,8 +241,8 @@ def main(argv):
     # pima indian diabetes
     # data, targets = load_file("pima.csv")
 
-    # xor data set
-    # data, targets = load_file("xor.csv")
+    # breast_cancer
+    # data, targets = load_dataset(datasets.load_breast_cancer())
 
     # number of targets and list of targets
     num_targets = num_of_diff_targets(targets)
