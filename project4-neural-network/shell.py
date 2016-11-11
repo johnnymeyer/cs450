@@ -236,10 +236,10 @@ def main(argv):
     # load the data from the database - choose which data set you want to use
 
     # iris data
-    data, targets = load_dataset(datasets.load_iris())
+    # data, targets = load_dataset(datasets.load_iris())
 
     # pima indian diabetes
-    # data, targets = load_file("pima.csv")
+    data, targets = load_file("pima.csv")
 
     # breast_cancer
     # data, targets = load_dataset(datasets.load_breast_cancer())
