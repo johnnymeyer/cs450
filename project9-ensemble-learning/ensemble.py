@@ -39,8 +39,8 @@ def get_accuracy(res, tt):
         if r == t:
             num_cor += 1
 
-    print("\nNumber of correct predictions:", num_cor, " of ", tt.size)
-    print("Accuracy rate is {0:.2f}%".format((num_cor / tt.size) * 100))
+    # print("Number of correct predictions:", num_cor, " of ", tt.size)
+    print("Accuracy rate is {0:.2f}%\n".format((num_cor / tt.size) * 100))
 
 
 def data_processing(d_data, d_target, classifier):
@@ -95,11 +95,55 @@ def data_processing(d_data, d_target, classifier):
             ans = bag.predict(test_data)
         else:
             print("Invalid command")
+    elif classifier == 'a' or classifier == 'A':
+        print("Neural Network")
+        c = mlp.MLPClassifier()
+        c.fit(train_data, train_target)
+        ans = c.predict(test_data)
+        get_accuracy(ans, test_target)
+
+        print("K nearest neighbors")
+        k = KNeighborsClassifier(5)
+        k.fit(train_data, train_target)
+        ans = k.predict(test_data)
+        get_accuracy(ans, test_target)
+
+        print("Support Vector Machine")
+        s = svm.SVC()
+        s.fit(train_data, train_target)
+        ans = s.predict(test_data)
+        get_accuracy(ans, test_target)
+
+        print("Decision Tree")
+        t = DecisionTreeClassifier()
+        t.fit(train_data, train_target)
+        ans = t.predict(test_data)
+        get_accuracy(ans, test_target)
+
+        print("Adaboosting")
+        ada = AdaBoostClassifier()
+        ada.fit(train_data, train_target)
+        ans = ada.predict(test_data)
+        get_accuracy(ans, test_target)
+
+        print("Bagging")
+        bag = BaggingClassifier()
+        bag.fit(train_data, train_target)
+        ans = bag.predict(test_data)
+        get_accuracy(ans, test_target)
+
+        print("Random Forrest")
+        forest = RandomForestClassifier()
+        forest.fit(train_data, train_target)
+        ans = forest.predict(test_data)
+        get_accuracy(ans, test_target)
+
     else:
         print("Invalid command\n")
 
     # get the accuracy
-    get_accuracy(ans, test_target)
+    if classifier != 'a' and classifier != 'A':
+        get_accuracy(ans, test_target)
 
 
 def main():
@@ -107,11 +151,15 @@ def main():
 
     data, targets = load_dataset(datasets.load_iris())
 
+    # data, targets = load_file('letter.csv')
+
     # data, targets = load_file('abalone.csv')
+
+    # data, targets = load_file('customer.csv')
 
     classifier = input("Which classifier would you like to run?\nN: neural network\n" +
                        "K: K nearest neighbors\nT: decision tree\nS: support vector machine\n" +
-                       "T: Decision Tree\nE: ensemble learning\n>> ")
+                       "T: Decision Tree\nE: ensemble learning\nA: Run all\n>> ")
 
     data_processing(data, targets, classifier)
 
