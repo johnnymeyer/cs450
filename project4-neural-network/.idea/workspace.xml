@@ -23,8 +23,8 @@
       <file leaf-file-name="shell.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/shell.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="188" column="72" selection-start-line="188" selection-start-column="72" selection-end-line="188" selection-end-column="72" />
+            <state relative-caret-position="270">
+              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="54" selection-end-column="38" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
                 <element signature="e#328#923#0" expanded="false" />
@@ -102,6 +102,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -123,7 +124,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -834,6 +834,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pima.csv">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/shell.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+            <element signature="e#328#923#0" expanded="false" />
+            <element signature="e#375#591#0" expanded="false" />
+            <element signature="e#636#923#0" expanded="false" />
+            <element signature="e#951#974#0" expanded="false" />
+            <element signature="e#1002#1415#0" expanded="false" />
+            <element signature="e#1438#1467#0" expanded="false" />
+            <element signature="e#1551#1957#0" expanded="false" />
+            <element signature="e#4729#4823#0" expanded="false" />
+            <element signature="e#5882#6145#0" expanded="false" />
+            <element signature="e#7764#7865#0" expanded="false" />
+            <element signature="e#7900#7988#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pima.csv">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="3" column="28" selection-start-line="3" selection-start-column="28" selection-end-line="3" selection-end-column="28" />
           <folding />
@@ -1028,8 +1057,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/shell.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="188" column="72" selection-start-line="188" selection-start-column="72" selection-end-line="188" selection-end-column="72" />
+        <state relative-caret-position="270">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="54" selection-end-column="38" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
             <element signature="e#328#923#0" expanded="false" />

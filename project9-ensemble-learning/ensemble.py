@@ -1,15 +1,35 @@
-from sklearn import ensemble
-from sklearn import neural_network as MLP
-from sklearn.neighbors import KNeighborsClassifier as KNN
-from sklearn import tree
+from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn import neural_network as mlp
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn import svm
-from sklearn.cross_validation import train_test_split as tts
+from sklearn.model_selection import train_test_split as tts
 from sklearn import datasets
-import sys
+import pandas as pd
 
 
 def load_dataset(s):
     return s.data, s.target
+
+
+def load_file(file):
+    """
+    Will split the dataset into the data and the targets if being read from a csv file.
+    :param file: the name of the file to be read in
+    :return: the data and the targets of the set
+    """
+
+    df = pd.read_csv(file)
+
+    data = df.ix[:, df.columns != "className"]
+    targets = df.ix[:, df.columns == "className"]
+
+    # names = df.columns
+    # n = names[:-1]
+
+    return data.values, targets.values
 
 
 def get_accuracy(res, tt):
@@ -25,13 +45,13 @@ def get_accuracy(res, tt):
 
 def data_processing(d_data, d_target, classifier):
     # user input for how much should be test and random state being used
-    ts = 0
-    while ts < .1 or ts > .5:
-        ts = float(input("Percentage of data for testing (Enter value between .1 and .5): "))
+    ts = .3
+    # while ts < .1 or ts > .5:
+    #     ts = float(input("Percentage of data for testing (Enter value between .1 and .5): "))
 
-    rs = 0
-    while rs <= 0:
-        rs = int(input("Random state for shuffling (Enter positive integer): "))
+    rs = 12
+    # while rs <= 0:
+    #     rs = int(input("Random state for shuffling (Enter positive integer): "))
 
     # split the data into test and training sets after it shuffles the data
     train_data, test_data, train_target, test_target = tts(d_data, d_target, test_size=ts, random_state=rs)
@@ -40,22 +60,41 @@ def data_processing(d_data, d_target, classifier):
 
     # Neural Network
     if classifier == 'n' or classifier == 'N':
-        c = MLP.MLPClassifier()
+        c = mlp.MLPClassifier()
         c.fit(train_data, train_target)
         ans = c.predict(test_data)
     # K Nearest Neighbors
     elif classifier == 'k' or classifier == 'K':
-        knn = KNN(5)
-        knn.fit(train_data, train_target)
-        ans = knn.predict(test_data)
+        k = KNeighborsClassifier(5)
+        k.fit(train_data, train_target)
+        ans = k.predict(test_data)
     # SVM
     elif classifier == 's' or classifier == 'S':
         s = svm.SVC()
         s.fit(train_data, train_target)
-        ans = s.predict(test_target)
+        ans = s.predict(test_data)
+    # Decision Tree
+    elif classifier == 't' or classifier == 'T':
+        t = DecisionTreeClassifier()
+        t.fit(train_data, train_target)
+        ans = t.predict(test_data)
     # ensemble
     elif classifier == 'e' or classifier == 'E':
-        print("not here yet")
+        ensemble = input("Which ensemble learning:\nA: Adaboosting\nB: Bagging\nF: Random Forest\n>> ")
+        if ensemble == 'f' or ensemble == 'F':
+            forest = RandomForestClassifier()
+            forest.fit(train_data, train_target)
+            ans = forest.predict(test_data)
+        elif ensemble == 'a' or ensemble == 'A':
+            ada = AdaBoostClassifier()
+            ada.fit(train_data, train_target)
+            ans = ada.predict(test_data)
+        elif ensemble == 'b' or ensemble == 'B':
+            bag = BaggingClassifier()
+            bag.fit(train_data, train_target)
+            ans = bag.predict(test_data)
+        else:
+            print("Invalid command")
     else:
         print("Invalid command\n")
 
@@ -63,18 +102,19 @@ def data_processing(d_data, d_target, classifier):
     get_accuracy(ans, test_target)
 
 
-def main(argv):
+def main():
     # load the data from the database - choose which data set you want to use
 
-    # iris data
     data, targets = load_dataset(datasets.load_iris())
+
+    # data, targets = load_file('abalone.csv')
 
     classifier = input("Which classifier would you like to run?\nN: neural network\n" +
                        "K: K nearest neighbors\nT: decision tree\nS: support vector machine\n" +
-                       "E: ensemble learning\n >> ")
+                       "T: Decision Tree\nE: ensemble learning\n>> ")
 
     data_processing(data, targets, classifier)
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()
